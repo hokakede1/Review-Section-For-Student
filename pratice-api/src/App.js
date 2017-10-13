@@ -1,6 +1,17 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import axios from 'axios';
+import {TimelineMax, TweenMax, Elastic} from 'gsap'
+import './App.css';
+// import axios from 'axios';
+
+
+var tl = new TimelineMax({
+  repeat:-1
+});
+let animation = new TimelineMax({
+      repeat:1,
+      yoyo:true
+    })
 
 
 class App extends Component {
@@ -8,35 +19,49 @@ class App extends Component {
     super()
 
     this.state = {
-      name: '',
-      input: ''
+      paused:true,
     }
   }
-
-
-
-  componentDidMount = () => {
-    axios.get('http://localhost:8080/api/getName')
-    .then(response => {
-      this.setState({
-        name: response.data
-      })
-    })
-  }
-
-
-  onInputChange(e){
-    
-  }
+  componentDidMount() {
+    tl.add( TweenMax.to('.test', 1, {backgroundColor: 'blue'}))
+    tl.add( TweenMax.to('.test', 1, {backgroundColor: 'yellow'}))
+    tl.add( TweenMax.to('.test', 1, {backgroundColor: 'green'}))
+    tl.add( TweenMax.to('.test', 1, {backgroundColor: 'red'}))
+    tl.add( TweenMax.to('.test', 1, {backgroundColor: 'orange'}))
+    tl.pause();
   
+
+
+    animation.staggerTo('.div', 2, {backgroundColor:'orange', ease:Elastic.easeOut}, .3)
+    .staggerTo('.div', 3, {width:'200px', ease:Elastic.easeOut}, .3)
+  }
+
+
+  animate(event) {
+    if (this.state.paused) {
+      tl.resume() 
+      this.setState({
+        paused:false,
+      })
+    } else {
+      tl.pause()
+      this.setState({
+        paused:true,
+      })
+    }
+  }
 
 
   render() {
     return (
       <div className="App">
-        <h1>My cat name is:</h1>
-        <h1>{this.state.name}</h1>
-        <input onChange={this.onInputChange}/>
+        <div onClick={(e)=>{this.animate(e)}} className='test'>Test div</div>
+        <div className='div'>A</div>
+        <div className='div'>B</div>
+        <div className='div'>C</div>
+        <div className='div'>D</div>
+        <div className='div'>E</div>
+        <div className='div'>F</div>
       </div>
     );
   }
